@@ -284,7 +284,7 @@ Nothing — greenfield project.
 
 ---
 
-### Task D.2: Build OpenAI Text Provider [AUTO]
+### Task D.2: Build OpenAI Text Provider [AUTO] ✅
 
 **What:** Implement the `ModelProvider` interface for GPT-4.1-mini text-based summarization.
 

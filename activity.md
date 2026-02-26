@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 6
+**Tasks Completed:** 7
 
 ---
 
@@ -106,3 +106,16 @@
   - Outer try-catch for unexpected errors (storage failures, etc.)
 - Files: src/features/processing/extract-text.ts
 - Notes: pdf-parse v3 uses class-based API (not the legacy default export). TypeScript compiles clean.
+
+## [2026-02-26 20:30] Task D.2: Build OpenAI Text Provider
+- Status: ✅ Complete
+- Created: src/features/processing/providers/openai-text.ts — `openAITextProvider` implementing `ModelProvider`
+- Functionality:
+  - `id`: "gpt-4.1-mini", `name`: "GPT-4.1 Mini", `supportsVision`: false
+  - `generateSummary(input)`: Builds system prompt from PRD Section 7, calls OpenAI with JSON response format, parses with `SummaryResponseSchema` Zod schema, tracks timing via `performance.now()`, extracts token usage from API response, calculates cost via `calculateCost()`
+  - `evaluateSummary(input)`: Builds evaluation prompt from PRD Section 7, sends original document + generated summary, parses with `EvaluationResponseSchema` Zod schema, tracks token usage and cost separately
+  - `callWithRetry()` helper: retries up to 3x with exponential backoff on 429 rate limit errors
+  - `buildTokenUsage()` helper: constructs `TokenUsage` from OpenAI response usage data
+  - Handles: empty responses, malformed JSON (Zod validation), rate limits, API errors
+- Files: src/features/processing/providers/openai-text.ts
+- Notes: TypeScript compiles clean.
