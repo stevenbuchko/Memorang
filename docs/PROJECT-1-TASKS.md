@@ -262,7 +262,7 @@ Nothing — greenfield project.
 
 ## Phase D: Processing Pipeline — Text Extraction Strategy [AUTO]
 
-### Task D.1: Build PDF Text Extraction Utility [AUTO]
+### Task D.1: Build PDF Text Extraction Utility [AUTO] ✅
 
 **What:** Create a utility that extracts raw text from a PDF file stored in Supabase Storage.
 

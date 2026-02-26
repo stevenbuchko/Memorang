@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 5
+**Tasks Completed:** 6
 
 ---
 
@@ -91,3 +91,18 @@
   - `dynamic = "force-dynamic"` to always fetch fresh data
 - Files: src/app/page.tsx, src/features/documents/document-card.tsx
 - Notes: TypeScript compiles clean.
+
+## [2026-02-26 20:00] Task D.1: Build PDF Text Extraction Utility
+- Status: ✅ Complete
+- Created: src/features/processing/extract-text.ts — `extractTextFromPdf(filePath)` function
+- Functionality:
+  - Downloads PDF from Supabase Storage using `supabaseAdmin`
+  - Uses pdf-parse v3 class-based API (`PDFParse` constructor + `getText()`)
+  - Returns `{ text, pageCount, success, error? }` as `TextExtractionResult`
+  - Handles password-protected PDFs (detects "password" in error message)
+  - Handles corrupted/unparseable PDFs with graceful error return
+  - Detects scanned PDFs: if extracted text < 50 chars, returns `success: false`
+  - Properly destroys PDFParse instance in finally block
+  - Outer try-catch for unexpected errors (storage failures, etc.)
+- Files: src/features/processing/extract-text.ts
+- Notes: pdf-parse v3 uses class-based API (not the legacy default export). TypeScript compiles clean.
