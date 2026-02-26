@@ -1,6 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from "@/lib/supabase";
+import { triggerProcessing } from "@/features/processing/actions";
 import { randomUUID } from "crypto";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
@@ -77,6 +78,11 @@ export async function uploadDocument(
   if (updateError) {
     return { error: `Failed to update document status: ${updateError.message}` };
   }
+
+  // Trigger processing in the background (fire-and-forget)
+  triggerProcessing(documentId).catch((err) =>
+    console.error(`Background processing failed for ${documentId}:`, err)
+  );
 
   return {
     id: documentId,

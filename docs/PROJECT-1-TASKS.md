@@ -322,7 +322,7 @@ Nothing — greenfield project.
 
 ---
 
-### Task D.3: Build Processing Orchestrator + Server Action [AUTO]
+### Task D.3: Build Processing Orchestrator + Server Action [AUTO] ✅
 
 **What:** Create the orchestrator that runs the text extraction strategy end-to-end, persists results to the database, and exposes it as a server action.
 

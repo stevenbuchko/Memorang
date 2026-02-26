@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 7
+**Tasks Completed:** 8
 
 ---
 
@@ -118,4 +118,23 @@
   - `buildTokenUsage()` helper: constructs `TokenUsage` from OpenAI response usage data
   - Handles: empty responses, malformed JSON (Zod validation), rate limits, API errors
 - Files: src/features/processing/providers/openai-text.ts
+- Notes: TypeScript compiles clean.
+
+## [2026-02-26 21:00] Task D.3: Build Processing Orchestrator + Server Action
+- Status: ✅ Complete
+- Created: src/features/processing/orchestrator.ts — `processDocument(documentId)` function
+- Created: src/features/processing/actions.ts — `triggerProcessing(documentId)` server action
+- Updated: src/features/upload/actions.ts — chains `triggerProcessing` after successful upload (fire-and-forget)
+- Functionality:
+  - Orchestrator fetches document record, runs text extraction, updates document with extraction results
+  - Creates summary record (status: processing), calls `openAITextProvider.generateSummary()` with extracted text
+  - Updates summary record with short/detailed summary, tags, document_type, tokens, cost, timing
+  - Runs self-evaluation via `openAITextProvider.evaluateSummary()`, persists scores and rationales to evaluations table
+  - 60s timeout per strategy via `withTimeout()` helper
+  - Partial failure handling: if summary succeeds but eval fails, summary is still saved as completed
+  - If no text extracted at all, marks document as failed
+  - Updates document status to `completed` or `failed` based on strategy outcome
+  - Server action wraps orchestrator with try-catch, returns `{ success, error? }`
+  - Upload action triggers processing in background (fire-and-forget with error logging)
+- Files: src/features/processing/orchestrator.ts, src/features/processing/actions.ts, src/features/upload/actions.ts
 - Notes: TypeScript compiles clean.
