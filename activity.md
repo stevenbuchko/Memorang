@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 8
+**Tasks Completed:** 9
 
 ---
 
@@ -137,4 +137,27 @@
   - Server action wraps orchestrator with try-catch, returns `{ success, error? }`
   - Upload action triggers processing in background (fire-and-forget with error logging)
 - Files: src/features/processing/orchestrator.ts, src/features/processing/actions.ts, src/features/upload/actions.ts
+- Notes: TypeScript compiles clean.
+
+## [2026-02-26 21:30] Task E.1: Build Document Detail Page
+- Status: ✅ Complete
+- Created: src/features/documents/strategy-card.tsx — `StrategyCard` client component
+- Created: src/app/documents/[id]/loading.tsx — Skeleton loading state
+- Updated: src/app/documents/[id]/page.tsx — Full document detail server component
+- Functionality:
+  - Server component fetches document with joined summaries, evaluations, and feedback
+  - Header section: filename, page count, file size (formatted), extraction success indicator, upload timestamp
+  - Summary card via StrategyCard component:
+    - Strategy label + model name badge + document type badge
+    - Short summary (always visible)
+    - Collapsible detailed summary section
+    - Tags displayed as colored badges by category with confidence shown on hover via Tooltip
+  - Evaluation section: four scores (completeness, confidence, specificity, overall) as Progress bars with rationales
+  - Overall score prominently displayed
+  - Metrics section: processing time, token count, estimated cost (summary + eval combined)
+  - Handles states: processing (alert), failed (destructive alert with error message), no summaries
+  - Back button to return to home page
+  - Loading skeleton for streaming/suspense
+  - Uses notFound() for invalid document IDs
+- Files: src/app/documents/[id]/page.tsx, src/features/documents/strategy-card.tsx, src/app/documents/[id]/loading.tsx
 - Notes: TypeScript compiles clean.

@@ -359,7 +359,7 @@ Nothing — greenfield project.
 
 ## Phase E: Document Detail Page — Display + Feedback [AUTO]
 
-### Task E.1: Build Document Detail Page [AUTO]
+### Task E.1: Build Document Detail Page [AUTO] ✅
 
 **What:** Build the document detail page showing the full summary results for the text extraction strategy.
 
