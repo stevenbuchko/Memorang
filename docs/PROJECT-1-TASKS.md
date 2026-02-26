@@ -177,7 +177,7 @@ Nothing — greenfield project.
 
 ## Phase C: Upload Flow [AUTO]
 
-### Task C.1: Build Upload Server Action [AUTO]
+### Task C.1: Build Upload Server Action [AUTO] ✅
 
 **What:** Create a server action that accepts a PDF file, uploads it to Supabase Storage, creates a document record, and returns the document ID.
 

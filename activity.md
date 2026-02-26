@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 3
+**Tasks Completed:** 4
 
 ---
 
@@ -43,3 +43,17 @@
 - All 11 required components now in src/components/ui/: card, badge, button, textarea, progress, alert, skeleton, tabs, dialog, separator, tooltip
 - Radix UI packages already installed: @radix-ui/react-dialog, @radix-ui/react-separator, @radix-ui/react-tooltip
 - Notes: TypeScript compiles clean. All components follow shadcn/ui new-york style conventions.
+
+## [2026-02-26 18:30] Task C.1: Build Upload Server Action
+- Status: ✅ Complete
+- Created: src/features/upload/actions.ts — server action `uploadDocument(formData: FormData)`
+- Functionality:
+  - Validates file exists, is PDF type, and ≤ 20MB
+  - Generates UUID for document
+  - Uploads file to Supabase Storage at `documents/{id}/{filename}`
+  - Creates document record in `documents` table with status `uploading`
+  - Updates status to `processing`
+  - Returns `{ id, filename, status }` on success or `{ error }` on failure
+  - Cleans up storage if DB insert fails
+- Files: src/features/upload/actions.ts
+- Notes: Uses supabaseAdmin (service role) since no auth. TypeScript compiles clean.
