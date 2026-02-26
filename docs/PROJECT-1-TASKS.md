@@ -396,7 +396,7 @@ Nothing — greenfield project.
 
 ---
 
-### Task E.2: Build Feedback Component + Server Action [AUTO]
+### Task E.2: Build Feedback Component + Server Action [AUTO] ✅
 
 **What:** Build the feedback UI (thumbs up/down + comment) and the server action to persist it.
 

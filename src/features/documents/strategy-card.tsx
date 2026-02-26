@@ -12,10 +12,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import type { Summary, Evaluation, Tag } from "@/types/database";
+import { FeedbackForm } from "@/features/feedback/feedback-form";
+import type { Summary, Evaluation, Feedback, Tag } from "@/types/database";
 
 interface StrategyCardProps {
-  summary: Summary & { evaluation: Evaluation | null };
+  summary: Summary & { evaluation: Evaluation | null; feedback: Feedback | null };
 }
 
 function formatProcessingTime(ms: number | null): string {
@@ -237,6 +238,11 @@ export function StrategyCard({ summary }: StrategyCardProps) {
             </div>
           </div>
         </div>
+
+        <Separator />
+
+        {/* Feedback */}
+        <FeedbackForm summaryId={summary.id} existingFeedback={summary.feedback} />
       </CardContent>
     </Card>
   );
