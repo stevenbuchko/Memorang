@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 4
+**Tasks Completed:** 5
 
 ---
 
@@ -72,4 +72,22 @@
   - Visual drag-over feedback (border color + background change)
 - Uses: shadcn Card, Button, Alert; Lucide icons (Upload, FileWarning, Loader2)
 - Files: src/features/upload/upload-zone.tsx
+- Notes: TypeScript compiles clean.
+
+## [2026-02-26 19:30] Task C.3: Build Home Page with Document List
+- Status: ✅ Complete
+- Created: src/features/documents/document-card.tsx — `DocumentCard` client component
+- Updated: src/app/page.tsx — Server component home page with document list
+- Functionality:
+  - Server component fetches all documents from Supabase ordered by created_at DESC
+  - Joins with summaries and evaluations to show per-strategy overall scores
+  - Page header: "Attachment Intelligence" title
+  - UploadZone component rendered at top
+  - Document list below with DocumentCard components showing:
+    - Filename (truncated), status badge (colored by status), eval scores per strategy
+    - Relative timestamp (e.g., "2h ago", "3d ago")
+  - Click on card navigates to `/documents/[id]`
+  - Empty state with icon when no documents exist
+  - `dynamic = "force-dynamic"` to always fetch fresh data
+- Files: src/app/page.tsx, src/features/documents/document-card.tsx
 - Notes: TypeScript compiles clean.

@@ -229,7 +229,7 @@ Nothing — greenfield project.
 
 ---
 
-### Task C.3: Build Home Page with Document List [AUTO]
+### Task C.3: Build Home Page with Document List [AUTO] ✅
 
 **What:** Build the home page showing the upload zone and a list of previously processed documents.
 
