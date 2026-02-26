@@ -57,3 +57,19 @@
   - Cleans up storage if DB insert fails
 - Files: src/features/upload/actions.ts
 - Notes: Uses supabaseAdmin (service role) since no auth. TypeScript compiles clean.
+
+## [2026-02-26 19:00] Task C.2: Build Upload UI Component
+- Status: ✅ Complete
+- Created: src/features/upload/upload-zone.tsx — `UploadZone` client component
+- Functionality:
+  - Drag-and-drop area with dashed border, upload icon, and instructional text
+  - Hidden file input triggered by clicking anywhere on the drop zone
+  - Client-side validation: PDF type + 20MB max size
+  - Calls `uploadDocument` server action on valid file
+  - Upload states: idle → uploading (spinner) → success (redirect) or error (alert)
+  - On success: redirects to `/documents/{id}` via `router.push()`
+  - Error display using shadcn Alert with destructive variant
+  - Visual drag-over feedback (border color + background change)
+- Uses: shadcn Card, Button, Alert; Lucide icons (Upload, FileWarning, Loader2)
+- Files: src/features/upload/upload-zone.tsx
+- Notes: TypeScript compiles clean.

@@ -203,7 +203,7 @@ Nothing — greenfield project.
 
 ---
 
-### Task C.2: Build Upload UI Component [AUTO]
+### Task C.2: Build Upload UI Component [AUTO] ✅
 
 **What:** Build a drag-and-drop upload zone with file validation and progress feedback.
 
