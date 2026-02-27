@@ -1,6 +1,6 @@
-"use server";
-
-import { PDFParse } from "pdf-parse";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error - import from lib directly to avoid pdf-parse's test file auto-loading
+import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export interface TextExtractionResult {
@@ -30,13 +30,11 @@ export async function extractTextFromPdf(
     }
 
     const arrayBuffer = await data.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
+    const buffer = Buffer.from(arrayBuffer);
 
-    let textResult;
-    let parser: PDFParse | null = null;
+    let result;
     try {
-      parser = new PDFParse({ data: uint8Array });
-      textResult = await parser.getText();
+      result = await pdfParse(buffer);
     } catch (parseError: unknown) {
       const message =
         parseError instanceof Error ? parseError.message : String(parseError);
@@ -56,14 +54,10 @@ export async function extractTextFromPdf(
         success: false,
         error: `Failed to parse PDF: ${message}`,
       };
-    } finally {
-      if (parser) {
-        await parser.destroy().catch(() => {});
-      }
     }
 
-    const text = textResult.text?.trim() ?? "";
-    const pageCount = textResult.total ?? 0;
+    const text = result.text?.trim() ?? "";
+    const pageCount = result.numpages ?? 0;
 
     if (text.length < MIN_TEXT_LENGTH) {
       return {

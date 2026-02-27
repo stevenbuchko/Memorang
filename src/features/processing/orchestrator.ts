@@ -1,5 +1,3 @@
-"use server";
-
 import { supabaseAdmin } from "@/lib/supabase";
 import { extractTextFromPdf } from "./extract-text";
 import { openAITextProvider } from "./providers/openai-text";

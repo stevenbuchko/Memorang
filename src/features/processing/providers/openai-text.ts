@@ -1,5 +1,3 @@
-"use server";
-
 import { openai } from "@/lib/openai";
 import { calculateCost } from "@/lib/costs";
 import {
@@ -65,17 +63,14 @@ export const openAITextProvider: ModelProvider = {
   async generateSummary(input: SummaryInput): Promise<SummaryOutput> {
     const startTime = performance.now();
 
-    let systemPrompt = `You are a document analysis assistant. Given the contents of a document, generate:
+    let systemPrompt = `You are a document analysis assistant. Given the contents of a document, generate a JSON response with exactly these keys:
 
-1. A SHORT SUMMARY (2-3 sentences) suitable for inline display. Be specific to THIS document — avoid generic descriptions.
-2. A DETAILED SUMMARY (2-4 paragraphs) covering main topics, key findings, and notable details.
-3. TAGS — array of relevant tags, each with:
-   - label: the tag text
-   - category: one of "topic", "document_type", "entity", "methodology", "domain"
-   - confidence: 0.0-1.0
-4. DOCUMENT TYPE — classify as one of: report, research_paper, invoice, contract, letter, manual, presentation, spreadsheet_export, form, other
-
-Respond in JSON format matching the provided schema.`;
+{
+  "shortSummary": "2-3 sentences suitable for inline display. Be specific to THIS document — avoid generic descriptions.",
+  "detailedSummary": "2-4 paragraphs covering main topics, key findings, and notable details.",
+  "tags": [{"label": "tag text", "category": "topic|document_type|entity|methodology|domain", "confidence": 0.0-1.0}],
+  "documentType": "report|research_paper|invoice|contract|letter|manual|presentation|spreadsheet_export|form|other"
+}`;
 
     if (input.projectContext) {
       systemPrompt += `\n\nThe document belongs to a project with this context: ${input.projectContext}\nConsider relevance to this project in your analysis.`;
@@ -117,15 +112,14 @@ Respond in JSON format matching the provided schema.`;
   },
 
   async evaluateSummary(input: EvaluationInput): Promise<EvaluationOutput> {
-    const systemPrompt = `You are an evaluation assistant. Given an original document and an AI-generated summary, evaluate the summary on these dimensions:
+    const systemPrompt = `You are an evaluation assistant. Given an original document and an AI-generated summary, evaluate the summary and respond with a JSON object using exactly these keys:
 
-1. COMPLETENESS (1-10): Does it capture all main points?
-2. CONFIDENCE (1-10): How confident are you in its accuracy?
-3. SPECIFICITY (1-10): Is it specific to this document or generic?
-4. OVERALL (1-10): Holistic quality assessment.
-
-For each, provide the score AND a brief rationale (1-2 sentences).
-Respond in JSON format matching the provided schema.`;
+{
+  "completeness": {"score": 1-10, "rationale": "1-2 sentences on whether it captures all main points"},
+  "confidence": {"score": 1-10, "rationale": "1-2 sentences on accuracy confidence"},
+  "specificity": {"score": 1-10, "rationale": "1-2 sentences on whether it is specific vs generic"},
+  "overall": {"score": 1-10, "rationale": "1-2 sentences holistic quality assessment"}
+}`;
 
     const userMessage = `ORIGINAL DOCUMENT:\n${input.originalContent}\n\nAI-GENERATED SUMMARY:\n${input.summary}`;
 
