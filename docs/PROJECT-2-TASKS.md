@@ -170,7 +170,7 @@
 
 ---
 
-### Task B.2: Build Cost-Per-Quality Comparison Display [AUTO]
+### Task B.2: Build Cost-Per-Quality Comparison Display [AUTO] ✅
 
 **What:** Add a comparison banner at the top of the detail page showing the cost/quality tradeoff between strategies.
 

@@ -255,3 +255,20 @@
   - Loading skeleton updated to show two card skeletons side-by-side on desktop
 - Files: src/features/documents/strategy-comparison.tsx, src/app/documents/[id]/page.tsx, src/app/documents/[id]/loading.tsx
 - Notes: TypeScript compiles clean.
+
+## [2026-02-26 03:00] Task B.2: Build Cost-Per-Quality Comparison Display
+- Status: ✅ Complete
+- Created: src/features/documents/comparison-banner.tsx — `ComparisonBanner` server component
+- Updated: src/app/documents/[id]/page.tsx — imports and renders ComparisonBanner above strategy cards
+- Functionality:
+  - Compact comparison table with four rows: Overall Score, Cost, Time, Cost per Point
+  - Two columns: Text Extraction vs Multimodal
+  - Winner highlighted in green per metric (higher score is better, lower cost/time is better)
+  - Cost per quality point calculated as total cost (summary + eval) / overall score
+  - Ties shown as normal text (no highlight)
+  - Handles null values gracefully (shows dash)
+  - Cost formatting adapts precision for very small vs typical amounts
+  - Only rendered when BOTH strategies have completed results
+  - Placed between document header and strategy comparison cards
+- Files: src/features/documents/comparison-banner.tsx, src/app/documents/[id]/page.tsx
+- Notes: TypeScript compiles clean.

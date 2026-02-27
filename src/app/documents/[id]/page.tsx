@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { StrategyComparison } from "@/features/documents/strategy-comparison";
+import { ComparisonBanner } from "@/features/documents/comparison-banner";
 import type {
   Document,
   Summary,
@@ -186,6 +187,27 @@ export default async function DocumentDetailPage({
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Comparison banner — only when both strategies completed */}
+        {(() => {
+          const textResult = doc.summaries.find(
+            (s) => s.strategy === "text_extraction" && s.status === "completed"
+          );
+          const multiResult = doc.summaries.find(
+            (s) => s.strategy === "multimodal" && s.status === "completed"
+          );
+          if (textResult && multiResult) {
+            return (
+              <div className="mt-6">
+                <ComparisonBanner
+                  textSummary={textResult}
+                  multimodalSummary={multiResult}
+                />
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         {/* Strategy comparison */}
         {doc.summaries.length > 0 && (
