@@ -1,10 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Clock, Coins, Hash } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Coins,
+  Hash,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -89,6 +98,61 @@ export function StrategyCard({ summary }: StrategyCardProps) {
   const strategyLabel =
     summary.strategy === "text_extraction" ? "Text Extraction" : "Multimodal";
 
+  // Processing state
+  if (summary.status === "processing") {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <CardTitle className="text-lg">{strategyLabel}</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">Generating summary...</p>
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-4 w-48" />
+          <div className="flex gap-2">
+            <Skeleton className="h-6 w-16 rounded-md" />
+            <Skeleton className="h-6 w-20 rounded-md" />
+          </div>
+          <Separator />
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-1.5">
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-12" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Failed state
+  if (summary.status === "failed") {
+    return (
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            <CardTitle className="text-lg">{strategyLabel}</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            {summary.error_message ?? "This strategy failed to produce results."}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Completed state
   return (
     <Card>
       <CardHeader>

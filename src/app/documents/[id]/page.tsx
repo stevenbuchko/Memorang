@@ -11,9 +11,8 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { StrategyComparison } from "@/features/documents/strategy-comparison";
-import { ComparisonBanner } from "@/features/documents/comparison-banner";
 import { ExtractionAlert } from "@/features/documents/extraction-alert";
+import { DocumentDetailPoller } from "@/features/documents/document-detail-poller";
 import type {
   Document,
   Summary,
@@ -110,13 +109,13 @@ export default async function DocumentDetailPage({
     notFound();
   }
 
-  const isProcessing = doc.status === "processing" || doc.status === "uploading";
   const isFailed = doc.status === "failed";
   const hasMultipleStrategies = doc.summaries.length > 1;
+  const isProcessing = doc.status === "processing" || doc.status === "uploading";
 
   return (
     <div className="min-h-screen bg-background">
-      <div className={`mx-auto px-4 py-12 ${hasMultipleStrategies ? "max-w-6xl" : "max-w-3xl"}`}>
+      <div className={`mx-auto px-4 py-12 ${hasMultipleStrategies || isProcessing ? "max-w-6xl" : "max-w-3xl"}`}>
         {/* Back button */}
         <Link href="/">
           <Button variant="ghost" size="sm" className="mb-6 -ml-2">
@@ -178,17 +177,6 @@ export default async function DocumentDetailPage({
           </div>
         )}
 
-        {/* Processing state */}
-        {isProcessing && (
-          <Alert>
-            <AlertTitle>Processing</AlertTitle>
-            <AlertDescription>
-              This document is still being processed. Refresh the page to see
-              updated results.
-            </AlertDescription>
-          </Alert>
-        )}
-
         {/* Failed state */}
         {isFailed && (
           <Alert variant="destructive">
@@ -200,35 +188,10 @@ export default async function DocumentDetailPage({
           </Alert>
         )}
 
-        {/* Comparison banner — only when both strategies completed */}
-        {(() => {
-          const textResult = doc.summaries.find(
-            (s) => s.strategy === "text_extraction" && s.status === "completed"
-          );
-          const multiResult = doc.summaries.find(
-            (s) => s.strategy === "multimodal" && s.status === "completed"
-          );
-          if (textResult && multiResult) {
-            return (
-              <div className="mt-6">
-                <ComparisonBanner
-                  textSummary={textResult}
-                  multimodalSummary={multiResult}
-                />
-              </div>
-            );
-          }
-          return null;
-        })()}
+        {/* Dynamic content with polling */}
+        <DocumentDetailPoller initialDocument={doc} />
 
-        {/* Strategy comparison */}
-        {doc.summaries.length > 0 && (
-          <div className="mt-6">
-            <StrategyComparison summaries={doc.summaries} />
-          </div>
-        )}
-
-        {/* No summaries yet (but not processing) */}
+        {/* No summaries yet (and not processing or failed) */}
         {doc.summaries.length === 0 && !isProcessing && !isFailed && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
             <FileText className="h-12 w-12 mb-4" />

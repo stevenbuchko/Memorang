@@ -312,3 +312,14 @@
 - Updated: src/app/documents/[id]/page.tsx — renders `ExtractionAlert` in document header when `error_type` is present
 - Files: src/features/processing/extract-text.ts, src/types/database.ts, src/features/processing/orchestrator.ts, src/features/documents/extraction-alert.tsx, src/app/documents/[id]/page.tsx
 - Notes: TypeScript compiles clean.
+
+## [2026-02-26 05:00] Task A.2: Loading and Processing States
+- Status: ✅ Complete
+- Created: src/app/api/documents/[id]/route.ts — API route for client-side polling of document data (returns document with joined summaries, evaluations, feedback)
+- Created: src/features/documents/processing-status.tsx — `ProcessingStatus` component showing which strategies are running vs completed vs failed, with spinner and per-strategy status indicators
+- Created: src/features/documents/document-detail-poller.tsx — `DocumentDetailPoller` client component that wraps the dynamic content area (ProcessingStatus, ComparisonBanner, StrategyComparison); polls every 3 seconds when document status is processing/uploading; stops polling and triggers router.refresh() when processing completes
+- Updated: src/features/documents/strategy-card.tsx — now handles three states internally: processing (skeleton content with "Generating summary..." message), completed (full results), failed (error alert with destructive border)
+- Updated: src/features/documents/strategy-comparison.tsx — simplified to delegate all state rendering to StrategyCard; removed redundant FailedStrategyCard, ProcessingStrategyCard, StrategyCardSkeleton components
+- Updated: src/app/documents/[id]/page.tsx — replaced inline processing alert and static comparison rendering with `DocumentDetailPoller` client component for live updates; removed old comparison banner/strategy comparison rendering
+- Files: src/app/api/documents/[id]/route.ts, src/features/documents/processing-status.tsx, src/features/documents/document-detail-poller.tsx, src/features/documents/strategy-card.tsx, src/features/documents/strategy-comparison.tsx, src/app/documents/[id]/page.tsx
+- Notes: TypeScript compiles clean. Polling stops automatically when status changes to completed/failed. No infinite polling risk.
