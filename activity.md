@@ -223,3 +223,18 @@
 - Pattern: Mirrors openai-text.ts structure for consistency
 - Files: src/features/processing/providers/openai-multimodal.ts
 - Notes: TypeScript compiles clean.
+
+## [2026-02-27 01:30] Task A.3: Update Processing Orchestrator for Dual Strategy
+- Status: ✅ Complete
+- Updated: src/features/processing/orchestrator.ts — now runs both text extraction AND multimodal strategies
+- Key changes:
+  - Extracted `runStrategy()` helper function: handles summary generation, evaluation, DB persistence, and error handling for any strategy. Takes strategy name, provider, content, and content type as params.
+  - Text extraction and PDF-to-image conversion run first to gather content
+  - If neither extraction method produces usable content, document is marked failed
+  - Both strategies run sequentially (safer for POC — avoids concurrent rate limits)
+  - Each strategy fails independently: if text extraction fails, multimodal still runs (and vice versa)
+  - Document marked `completed` if at least one strategy succeeds, `failed` only if all fail
+  - Page count fallback: uses image conversion page count if text extraction didn't provide it
+  - Multimodal content passed as JSON-stringified array of base64 images (matches openai-multimodal provider's expected format)
+- Files: src/features/processing/orchestrator.ts
+- Notes: TypeScript compiles clean. No changes needed to the server action or upload action.

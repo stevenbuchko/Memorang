@@ -1,6 +1,9 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { extractTextFromPdf } from "./extract-text";
+import { convertPdfToImages } from "./pdf-to-images";
 import { openAITextProvider } from "./providers/openai-text";
+import { openAIMultimodalProvider } from "./providers/openai-multimodal";
+import type { ModelProvider, SummaryOutput } from "@/types/ai";
 import { randomUUID } from "crypto";
 
 const STRATEGY_TIMEOUT_MS = 60_000;
@@ -21,6 +24,104 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
         reject(err);
       });
   });
+}
+
+async function runStrategy(params: {
+  documentId: string;
+  strategy: "text_extraction" | "multimodal";
+  provider: ModelProvider;
+  content: string;
+  contentType: "text" | "image";
+  projectContext?: string;
+}): Promise<boolean> {
+  const { documentId, strategy, provider, content, contentType, projectContext } = params;
+  const summaryId = randomUUID();
+
+  // Create summary record (status: processing)
+  await supabaseAdmin.from("summaries").insert({
+    id: summaryId,
+    document_id: documentId,
+    strategy,
+    model_id: provider.id,
+    model_name: provider.name,
+    status: "processing",
+  });
+
+  try {
+    // Generate summary with timeout
+    const summaryResult: SummaryOutput = await withTimeout(
+      provider.generateSummary({
+        content,
+        contentType,
+        projectContext,
+      }),
+      STRATEGY_TIMEOUT_MS
+    );
+
+    // Update summary record with results
+    await supabaseAdmin
+      .from("summaries")
+      .update({
+        summary_short: summaryResult.shortSummary,
+        summary_detailed: summaryResult.detailedSummary,
+        document_type: summaryResult.documentType,
+        tags: summaryResult.tags,
+        processing_time_ms: Math.round(summaryResult.processingTimeMs),
+        input_tokens: summaryResult.tokenUsage.inputTokens,
+        output_tokens: summaryResult.tokenUsage.outputTokens,
+        total_tokens: summaryResult.tokenUsage.totalTokens,
+        estimated_cost_usd: summaryResult.tokenUsage.estimatedCostUsd,
+        status: "completed",
+      })
+      .eq("id", summaryId);
+
+    // --- Self-Evaluation ---
+    try {
+      const evalResult = await withTimeout(
+        provider.evaluateSummary({
+          originalContent: content,
+          summary: summaryResult.shortSummary + "\n\n" + summaryResult.detailedSummary,
+        }),
+        STRATEGY_TIMEOUT_MS
+      );
+
+      await supabaseAdmin.from("evaluations").insert({
+        id: randomUUID(),
+        summary_id: summaryId,
+        completeness_score: evalResult.completeness.score,
+        completeness_rationale: evalResult.completeness.rationale,
+        confidence_score: evalResult.confidence.score,
+        confidence_rationale: evalResult.confidence.rationale,
+        specificity_score: evalResult.specificity.score,
+        specificity_rationale: evalResult.specificity.rationale,
+        overall_score: evalResult.overall.score,
+        overall_rationale: evalResult.overall.rationale,
+        input_tokens: evalResult.tokenUsage.inputTokens,
+        output_tokens: evalResult.tokenUsage.outputTokens,
+        total_tokens: evalResult.tokenUsage.totalTokens,
+        estimated_cost_usd: evalResult.tokenUsage.estimatedCostUsd,
+      });
+    } catch (evalError: unknown) {
+      const message = evalError instanceof Error ? evalError.message : String(evalError);
+      console.error(`Evaluation failed for ${strategy} summary ${summaryId}:`, message);
+      // Partial failure: summary succeeded but eval failed — still counts as success
+    }
+
+    return true;
+  } catch (summaryError: unknown) {
+    const message = summaryError instanceof Error ? summaryError.message : String(summaryError);
+    console.error(`${strategy} strategy failed for document ${params.documentId}:`, message);
+
+    await supabaseAdmin
+      .from("summaries")
+      .update({
+        status: "failed",
+        error_message: message,
+      })
+      .eq("id", summaryId);
+
+    return false;
+  }
 }
 
 export async function processDocument(documentId: string): Promise<void> {
@@ -49,106 +150,74 @@ export async function processDocument(documentId: string): Promise<void> {
     })
     .eq("id", documentId);
 
-  // If extraction has no usable text at all, mark failed
-  if (!extraction.text || extraction.text.trim().length === 0) {
+  // --- PDF-to-Image Conversion ---
+  const imageConversion = await convertPdfToImages(document.file_path);
+
+  // --- Run Both Strategies ---
+  const hasText = extraction.text && extraction.text.trim().length > 0;
+  const hasImages = imageConversion.success && imageConversion.images.length > 0;
+
+  // If neither extraction method produced usable content, mark failed
+  if (!hasText && !hasImages) {
     await supabaseAdmin
       .from("documents")
-      .update({ status: "failed", error_message: extraction.error || "No text extracted" })
+      .update({
+        status: "failed",
+        error_message: extraction.error || imageConversion.error || "No content could be extracted",
+      })
       .eq("id", documentId);
     return;
   }
 
-  // --- Text Extraction Strategy ---
-  const summaryId = randomUUID();
-  let strategySucceeded = false;
+  // Update page count from image conversion if text extraction didn't provide it
+  if (!extraction.pageCount && imageConversion.pageCount) {
+    await supabaseAdmin
+      .from("documents")
+      .update({ page_count: imageConversion.pageCount })
+      .eq("id", documentId);
+  }
 
-  // Create summary record (status: processing)
-  await supabaseAdmin.from("summaries").insert({
-    id: summaryId,
-    document_id: documentId,
-    strategy: "text_extraction",
-    model_id: openAITextProvider.id,
-    model_name: openAITextProvider.name,
-    status: "processing",
-  });
+  // Build strategy promises
+  const strategyPromises: Promise<boolean>[] = [];
 
-  try {
-    // Generate summary with timeout
-    const summaryResult = await withTimeout(
-      openAITextProvider.generateSummary({
-        content: extraction.text,
+  if (hasText) {
+    strategyPromises.push(
+      runStrategy({
+        documentId,
+        strategy: "text_extraction",
+        provider: openAITextProvider,
+        content: extraction.text!,
         contentType: "text",
         projectContext: document.project_context ?? undefined,
-      }),
-      STRATEGY_TIMEOUT_MS
+      })
     );
-
-    // Update summary record with results
-    await supabaseAdmin
-      .from("summaries")
-      .update({
-        summary_short: summaryResult.shortSummary,
-        summary_detailed: summaryResult.detailedSummary,
-        document_type: summaryResult.documentType,
-        tags: summaryResult.tags,
-        processing_time_ms: Math.round(summaryResult.processingTimeMs),
-        input_tokens: summaryResult.tokenUsage.inputTokens,
-        output_tokens: summaryResult.tokenUsage.outputTokens,
-        total_tokens: summaryResult.tokenUsage.totalTokens,
-        estimated_cost_usd: summaryResult.tokenUsage.estimatedCostUsd,
-        status: "completed",
-      })
-      .eq("id", summaryId);
-
-    strategySucceeded = true;
-
-    // --- Self-Evaluation ---
-    try {
-      const evalResult = await withTimeout(
-        openAITextProvider.evaluateSummary({
-          originalContent: extraction.text,
-          summary: summaryResult.shortSummary + "\n\n" + summaryResult.detailedSummary,
-        }),
-        STRATEGY_TIMEOUT_MS
-      );
-
-      await supabaseAdmin.from("evaluations").insert({
-        id: randomUUID(),
-        summary_id: summaryId,
-        completeness_score: evalResult.completeness.score,
-        completeness_rationale: evalResult.completeness.rationale,
-        confidence_score: evalResult.confidence.score,
-        confidence_rationale: evalResult.confidence.rationale,
-        specificity_score: evalResult.specificity.score,
-        specificity_rationale: evalResult.specificity.rationale,
-        overall_score: evalResult.overall.score,
-        overall_rationale: evalResult.overall.rationale,
-        input_tokens: evalResult.tokenUsage.inputTokens,
-        output_tokens: evalResult.tokenUsage.outputTokens,
-        total_tokens: evalResult.tokenUsage.totalTokens,
-        estimated_cost_usd: evalResult.tokenUsage.estimatedCostUsd,
-      });
-    } catch (evalError: unknown) {
-      const message = evalError instanceof Error ? evalError.message : String(evalError);
-      console.error(`Evaluation failed for summary ${summaryId}:`, message);
-      // Partial failure: summary succeeded but eval failed — still counts as success
-    }
-  } catch (summaryError: unknown) {
-    const message = summaryError instanceof Error ? summaryError.message : String(summaryError);
-    console.error(`Summary generation failed for document ${documentId}:`, message);
-
-    await supabaseAdmin
-      .from("summaries")
-      .update({
-        status: "failed",
-        error_message: message,
-      })
-      .eq("id", summaryId);
   }
+
+  if (hasImages) {
+    strategyPromises.push(
+      runStrategy({
+        documentId,
+        strategy: "multimodal",
+        provider: openAIMultimodalProvider,
+        content: JSON.stringify(imageConversion.images),
+        contentType: "image",
+        projectContext: document.project_context ?? undefined,
+      })
+    );
+  }
+
+  // Run strategies sequentially (safer for POC — avoids concurrent rate limits)
+  const results: boolean[] = [];
+  for (const strategyPromise of strategyPromises) {
+    const result = await strategyPromise;
+    results.push(result);
+  }
+
+  const anySucceeded = results.some((r) => r);
 
   // --- Update Document Status ---
   await supabaseAdmin
     .from("documents")
-    .update({ status: strategySucceeded ? "completed" : "failed" })
+    .update({ status: anySucceeded ? "completed" : "failed" })
     .eq("id", documentId);
 }
