@@ -9,7 +9,7 @@
 MAX_ITERATIONS=25          # Safety limit per run
 SLEEP_BETWEEN=5            # Seconds between iterations
 MAX_TURNS=75               # Max tool uses per Claude session
-TASKS_FILE="docs/PROJECT-1-TASKS.md"  # Current project task file
+TASKS_FILE="docs/PROJECT-2-TASKS.md"  # Current project task file
 
 # Colors
 GREEN='\033[0;32m'

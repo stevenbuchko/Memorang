@@ -32,9 +32,10 @@ async function runStrategy(params: {
   provider: ModelProvider;
   content: string;
   contentType: "text" | "image";
+  evalContent?: string;
   projectContext?: string;
 }): Promise<boolean> {
-  const { documentId, strategy, provider, content, contentType, projectContext } = params;
+  const { documentId, strategy, provider, content, contentType, evalContent, projectContext } = params;
   const summaryId = randomUUID();
 
   // Create summary record (status: processing)
@@ -79,7 +80,7 @@ async function runStrategy(params: {
     try {
       const evalResult = await withTimeout(
         provider.evaluateSummary({
-          originalContent: content,
+          originalContent: evalContent ?? content,
           summary: summaryResult.shortSummary + "\n\n" + summaryResult.detailedSummary,
         }),
         STRATEGY_TIMEOUT_MS
@@ -201,6 +202,7 @@ export async function processDocument(documentId: string): Promise<void> {
         provider: openAIMultimodalProvider,
         content: JSON.stringify(imageConversion.images),
         contentType: "image",
+        evalContent: hasText ? extraction.text! : undefined,
         projectContext: document.project_context ?? undefined,
       })
     );

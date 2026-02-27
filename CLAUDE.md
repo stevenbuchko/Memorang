@@ -82,6 +82,7 @@ Since there's no authentication in this POC, all server-side DB and Storage oper
 All AI models implement the `ModelProvider` interface from `src/types/ai.ts`. To add a new model (Claude, Gemini, etc.), create a new file in `src/features/processing/providers/` implementing the interface. No pipeline or UI changes needed.
 
 Current providers:
+
 - `openai-text.ts` — GPT-4.1-mini, text-based summarization
 - `openai-multimodal.ts` — GPT-4o, vision-based summarization
 
@@ -120,4 +121,4 @@ Every OpenAI call tracks token usage from the API response. Cost is calculated u
 
 ## Current Phase
 
-Check PROJECT-1-TASKS.md for the current task list and activity.md for recent progress.
+Check PROJECT-2-TASKS.md for the current task list and activity.md for recent progress.

@@ -14,7 +14,7 @@ export const SummaryResponseSchema = z.object({
         "entity",
         "methodology",
         "domain",
-      ]),
+      ]).catch("topic"),
       confidence: z.number().min(0).max(1),
     })
   ),
@@ -29,7 +29,7 @@ export const SummaryResponseSchema = z.object({
     "spreadsheet_export",
     "form",
     "other",
-  ]),
+  ]).catch("other"),
 });
 
 export const EvaluationResponseSchema = z.object({
