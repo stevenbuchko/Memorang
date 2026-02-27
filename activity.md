@@ -208,3 +208,18 @@
   - Outer try-catch for unexpected errors (storage failures, etc.)
 - Files: src/features/processing/pdf-to-images.ts, package.json (added mupdf dependency)
 - Notes: TypeScript compiles clean. Removed failed `pdf-to-img` dependency (also needed canvas).
+
+## [2026-02-27 01:00] Task A.2: Build OpenAI Multimodal Provider
+- Status: ✅ Complete
+- Created: src/features/processing/providers/openai-multimodal.ts — `openAIMultimodalProvider` implementing `ModelProvider`
+- Functionality:
+  - `id`: "gpt-4o", `name`: "GPT-4o", `supportsVision`: true
+  - `generateSummary(input)`: Parses input.content as JSON array of base64 images, builds message with image_url content blocks using `detail: "low"` to reduce token cost, includes system prompt for document analysis, parses response with `SummaryResponseSchema`, tracks timing/tokens/cost
+  - `evaluateSummary(input)`: Text-based evaluation (does NOT re-send images to save tokens), sends original content description + generated summary, parses with `EvaluationResponseSchema`, tracks token usage and cost
+  - `callWithRetry()` helper: retries up to 3x with exponential backoff on 429 rate limit errors
+  - `buildTokenUsage()` helper: constructs `TokenUsage` from OpenAI response usage data
+  - Cost rates: $2.50/M input tokens, $10.00/M output tokens (matches MODEL_PRICING in costs.ts)
+  - Handles: empty responses, malformed JSON (Zod validation), rate limits, API errors
+- Pattern: Mirrors openai-text.ts structure for consistency
+- Files: src/features/processing/providers/openai-multimodal.ts
+- Notes: TypeScript compiles clean.
