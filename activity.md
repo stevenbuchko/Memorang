@@ -3,7 +3,7 @@
 ## Current Status
 **Last Updated:** 2026-02-26
 **Current Project:** 02-multimodal-comparison
-**Tasks Completed:** 11
+**Tasks Completed:** 12
 
 ---
 
@@ -272,3 +272,29 @@
   - Placed between document header and strategy comparison cards
 - Files: src/features/documents/comparison-banner.tsx, src/app/documents/[id]/page.tsx
 - Notes: TypeScript compiles clean.
+
+## [2026-02-26 03:30] Task B.3: Add Aggregate Stats to Home Page
+- Status: ✅ Complete
+- Created: src/features/documents/aggregate-stats.tsx — `AggregateStats` server component
+- Updated: src/app/page.tsx — imports and renders AggregateStats above upload zone
+- Functionality:
+  - Queries all completed documents, their completed summaries, and evaluations
+  - Calculates six aggregate metrics displayed as a responsive grid of stat cards:
+    - Documents Processed (total count)
+    - Avg Score (Text) — average overall evaluation score for text_extraction strategy
+    - Avg Score (Multimodal) — average overall evaluation score for multimodal strategy
+    - Total Cost — sum of all summary + evaluation costs across all strategies
+    - Avg Cost/Doc (Text) — average per-document cost for text_extraction
+    - Avg Cost/Doc (Multimodal) — average per-document cost for multimodal
+  - Responsive grid: 2 cols mobile, 3 cols tablet, 6 cols desktop
+  - Returns null (renders nothing) when no completed documents exist
+  - Currency formatting adapts precision for very small amounts
+  - Scores displayed with /10 sublabel
+  - Uses shadcn Card components with large number + label pattern
+- Files: src/features/documents/aggregate-stats.tsx, src/app/page.tsx
+- Notes: TypeScript compiles clean. All [AUTO] tasks in Phase B complete. Only Phase C (VERIFY) remains.
+
+## [2026-02-26 03:30] All AUTO Tasks Complete (Project 2)
+- Status: PROJECT_COMPLETE
+- All [AUTO] tasks in docs/PROJECT-2-TASKS.md are complete (A.1–A.3, B.1–B.3)
+- Remaining: Task C.1 is [VERIFY] — requires Steven to manually test the dual strategy comparison flow

@@ -202,7 +202,7 @@
 
 ---
 
-### Task B.3: Add Aggregate Stats to Home Page [AUTO]
+### Task B.3: Add Aggregate Stats to Home Page [AUTO] ✅
 
 **What:** Add a stats bar to the home page showing aggregate metrics across all processed documents.
 

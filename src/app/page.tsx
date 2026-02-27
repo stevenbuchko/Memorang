@@ -2,6 +2,7 @@ import { FileText } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { UploadZone } from "@/features/upload/upload-zone";
 import { DocumentCard } from "@/features/documents/document-card";
+import { AggregateStats } from "@/features/documents/aggregate-stats";
 import type { Document, Summary, Evaluation } from "@/types/database";
 
 type DocumentWithScores = Document & {
@@ -65,7 +66,11 @@ export default async function Home() {
           Attachment Intelligence
         </h1>
 
-        <UploadZone />
+        <AggregateStats />
+
+        <div className="mt-6">
+          <UploadZone />
+        </div>
 
         <div className="mt-10">
           {documents.length === 0 ? (
