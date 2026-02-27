@@ -121,4 +121,4 @@ Every OpenAI call tracks token usage from the API response. Cost is calculated u
 
 ## Current Phase
 
-Check PROJECT-2-TASKS.md for the current task list and activity.md for recent progress.
+Check PROJECT-3-TASKS.md for the current task list and activity.md for recent progress.

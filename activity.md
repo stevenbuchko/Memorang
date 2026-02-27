@@ -359,3 +359,17 @@
 - Updated: src/features/documents/strategy-card.tsx — evaluation score progress bars now colored by score range (1-3=red, 4-6=yellow, 7-10=green); score text colors updated to match
 - Files: src/components/ui/sonner.tsx, src/components/ui/progress.tsx, src/app/layout.tsx, src/app/page.tsx, src/app/documents/[id]/page.tsx, src/features/upload/upload-zone.tsx, src/features/feedback/feedback-form.tsx, src/features/documents/document-detail-poller.tsx, src/features/documents/document-card.tsx, src/features/documents/strategy-card.tsx
 - Notes: TypeScript compiles clean. All four subtasks addressed: empty states, toast notifications, visual consistency (badge colors + progress bar colors), and dynamic page titles.
+
+## [2026-02-26 09:00] Task C.1: Prepare for Production Build
+- Status: ✅ Complete
+- Fixed: Google Fonts build failure — switched from `next/font/google` (requires network at build time) to `geist` npm package with local font files. Installed `geist` package.
+- Fixed: Supabase client crash at build time — `createClient()` was called at module import time, failing when env vars weren't set. Converted to lazy Proxy pattern so clients are only initialized on first use.
+- Fixed: OpenAI client same issue — applied identical lazy Proxy pattern to `src/lib/openai.ts`.
+- Created: `.env.example` documenting all 4 required environment variables (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY)
+- Verified: `next.config.ts` already has `mupdf` in `serverExternalPackages` (needed for WASM PDF renderer). `pdf-parse` is pure JS and doesn't need it.
+- Verified: `npm run build` succeeds with zero errors. `npm run start` starts server successfully (runtime errors only occur when env vars are missing, which is expected in sandbox).
+- Verified: No hardcoded credentials — all env vars accessed via `process.env`.
+- Updated: src/app/layout.tsx, src/lib/supabase.ts, src/lib/openai.ts
+- Created: .env.example
+- Installed: geist (npm package for local Geist fonts)
+- Notes: TypeScript compiles clean. Build produces correct route structure (static: /_not-found, dynamic: /, /api/documents/[id], /documents/[id]).
