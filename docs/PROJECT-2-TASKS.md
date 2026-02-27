@@ -138,7 +138,7 @@
 
 ## Phase B: Comparison UI [AUTO]
 
-### Task B.1: Build Side-by-Side Comparison Layout [AUTO]
+### Task B.1: Build Side-by-Side Comparison Layout [AUTO] ✅
 
 **What:** Refactor the document detail page to show both strategies side-by-side.
 

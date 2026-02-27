@@ -238,3 +238,20 @@
   - Multimodal content passed as JSON-stringified array of base64 images (matches openai-multimodal provider's expected format)
 - Files: src/features/processing/orchestrator.ts
 - Notes: TypeScript compiles clean. No changes needed to the server action or upload action.
+
+## [2026-02-27 02:00] Task B.1: Build Side-by-Side Comparison Layout
+- Status: ✅ Complete
+- Created: src/features/documents/strategy-comparison.tsx — `StrategyComparison` client component
+- Updated: src/app/documents/[id]/page.tsx — refactored to use StrategyComparison, widened max-width for dual strategy
+- Updated: src/app/documents/[id]/loading.tsx — two-column skeleton layout
+- Functionality:
+  - Desktop (≥768px): Two-column grid layout, one column per strategy
+  - Mobile (<768px): shadcn Tabs to toggle between "Text Extraction" and "Multimodal"
+  - Responsive detection via `matchMedia` with event listener for live switching
+  - Each strategy rendered independently: completed → StrategyCard, processing → spinner card, failed → error card
+  - Single strategy backward compatibility: full-width layout with informational alert noting the other strategy is unavailable
+  - Strategies identified by type (text_extraction / multimodal) regardless of array order
+  - Page max-width dynamically set: max-w-6xl for dual strategy, max-w-3xl for single
+  - Loading skeleton updated to show two card skeletons side-by-side on desktop
+- Files: src/features/documents/strategy-comparison.tsx, src/app/documents/[id]/page.tsx, src/app/documents/[id]/loading.tsx
+- Notes: TypeScript compiles clean.

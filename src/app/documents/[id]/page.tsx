@@ -11,7 +11,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { StrategyCard } from "@/features/documents/strategy-card";
+import { StrategyComparison } from "@/features/documents/strategy-comparison";
 import type {
   Document,
   Summary,
@@ -109,10 +109,11 @@ export default async function DocumentDetailPage({
 
   const isProcessing = doc.status === "processing" || doc.status === "uploading";
   const isFailed = doc.status === "failed";
+  const hasMultipleStrategies = doc.summaries.length > 1;
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-12">
+      <div className={`mx-auto px-4 py-12 ${hasMultipleStrategies ? "max-w-6xl" : "max-w-3xl"}`}>
         {/* Back button */}
         <Link href="/">
           <Button variant="ghost" size="sm" className="mb-6 -ml-2">
@@ -186,12 +187,10 @@ export default async function DocumentDetailPage({
           </Alert>
         )}
 
-        {/* Strategy cards */}
+        {/* Strategy comparison */}
         {doc.summaries.length > 0 && (
-          <div className="space-y-6 mt-6">
-            {doc.summaries.map((summary) => (
-              <StrategyCard key={summary.id} summary={summary} />
-            ))}
+          <div className="mt-6">
+            <StrategyComparison summaries={doc.summaries} />
           </div>
         )}
 
