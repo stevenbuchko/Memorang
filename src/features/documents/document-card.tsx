@@ -10,17 +10,15 @@ type DocumentWithScores = Document & {
   summaries: (Summary & { evaluation: Evaluation | null })[];
 };
 
-function getStatusVariant(
-  status: Document["status"]
-): "default" | "secondary" | "destructive" | "outline" {
+function getStatusColor(status: Document["status"]): string {
   switch (status) {
     case "completed":
-      return "default";
+      return "bg-green-100 text-green-800 border-green-200";
     case "processing":
     case "uploading":
-      return "secondary";
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case "failed":
-      return "destructive";
+      return "bg-red-100 text-red-800 border-red-200";
   }
 }
 
@@ -66,7 +64,7 @@ export function DocumentCard({ doc }: { doc: DocumentWithScores }) {
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{doc.filename}</p>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <Badge variant={getStatusVariant(doc.status)}>{doc.status}</Badge>
+              <Badge variant="outline" className={getStatusColor(doc.status)}>{doc.status}</Badge>
               {scores && (
                 <span className="text-xs text-muted-foreground">{scores}</span>
               )}

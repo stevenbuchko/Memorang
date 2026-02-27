@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, FileWarning, Loader2, ChevronDown, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -68,9 +69,11 @@ export function UploadZone() {
       if ("error" in result) {
         setError(result.error);
         setUploadState("error");
+        toast.error(`Upload failed: ${result.error}`);
         return;
       }
 
+      toast.success("Document uploaded. Processing started...");
       router.push(`/documents/${result.id}`);
     },
     [router, projectContext]

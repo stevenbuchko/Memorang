@@ -45,9 +45,15 @@ function formatCost(cost: number | null): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 8) return "text-green-600";
-  if (score >= 5) return "text-yellow-600";
+  if (score >= 7) return "text-green-600";
+  if (score >= 4) return "text-yellow-600";
   return "text-red-600";
+}
+
+function getScoreBarColor(score: number): string {
+  if (score >= 7) return "bg-green-500";
+  if (score >= 4) return "bg-yellow-500";
+  return "bg-red-500";
 }
 
 function getCategoryColor(category: Tag["category"]): string {
@@ -84,7 +90,7 @@ function EvalScore({
           {score}/10
         </span>
       </div>
-      <Progress value={score * 10} className="h-2" />
+      <Progress value={score * 10} className="h-2" indicatorClassName={getScoreBarColor(score)} />
       {rationale && (
         <p className="text-xs text-muted-foreground">{rationale}</p>
       )}

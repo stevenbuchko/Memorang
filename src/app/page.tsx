@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { UploadZone } from "@/features/upload/upload-zone";
 import { DocumentCard } from "@/features/documents/document-card";
@@ -75,10 +75,12 @@ export default async function Home() {
         <div className="mt-10">
           {documents.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-              <FileText className="h-12 w-12 mb-4" />
-              <p className="text-sm font-medium">No documents yet</p>
-              <p className="text-xs mt-1">
-                Upload a PDF to get started
+              <div className="rounded-full bg-muted p-4 mb-4">
+                <Upload className="h-10 w-10" />
+              </div>
+              <p className="text-base font-medium">Upload your first PDF to get started</p>
+              <p className="text-sm mt-1">
+                AI will generate summaries, tags, and quality scores using two strategies
               </p>
             </div>
           ) : (

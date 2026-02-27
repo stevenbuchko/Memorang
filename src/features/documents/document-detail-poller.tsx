@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ProcessingStatus } from "@/features/documents/processing-status";
 import { StrategyComparison } from "@/features/documents/strategy-comparison";
 import { ComparisonBanner } from "@/features/documents/comparison-banner";
@@ -37,7 +38,11 @@ export function DocumentDetailPoller({ initialDocument }: DocumentDetailPollerPr
       const data: DocumentDetail = await res.json();
       setDoc(data);
 
-      if (data.status === "completed" || data.status === "failed") {
+      if (data.status === "completed") {
+        toast.success("Processing complete");
+        router.refresh();
+      } else if (data.status === "failed") {
+        toast.error("Processing failed");
         router.refresh();
       }
     } catch {

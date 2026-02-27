@@ -343,3 +343,19 @@
 - Updated: src/features/feedback/feedback-form.tsx — flex-wrap on feedback buttons, 44px min-height touch targets on all interactive buttons
 - Files: src/app/page.tsx, src/app/documents/[id]/page.tsx, src/features/documents/strategy-card.tsx, src/features/documents/comparison-banner.tsx, src/features/documents/document-card.tsx, src/features/documents/aggregate-stats.tsx, src/features/upload/upload-zone.tsx, src/features/feedback/feedback-form.tsx
 - Notes: All interactive elements have ≥44px touch targets. No horizontal scroll at 375px. Content readable without zooming. Tabs already handle mobile strategy switching (from Project 2). TypeScript compiles clean.
+
+## [2026-02-26 08:00] Task B.3: UI Polish Pass
+- Status: ✅ Complete
+- Installed: `sonner` toast library
+- Created: src/components/ui/sonner.tsx — Toaster wrapper component for sonner
+- Updated: src/app/layout.tsx — added Toaster to root layout for global toast support
+- Updated: src/app/page.tsx — improved empty state with circular icon background, more inviting copy ("Upload your first PDF to get started"), and descriptive subtitle
+- Updated: src/features/upload/upload-zone.tsx — added toast notifications for upload success ("Document uploaded. Processing started...") and upload error
+- Updated: src/features/feedback/feedback-form.tsx — added toast on feedback save ("Feedback saved"), changed heading to "Rate this summary" prompt when no feedback exists yet
+- Updated: src/features/documents/document-detail-poller.tsx — added toast when processing completes ("Processing complete") or fails ("Processing failed")
+- Updated: src/features/documents/document-card.tsx — replaced variant-based status badges with consistent color scheme: completed=green, processing/uploading=yellow, failed=red
+- Updated: src/app/documents/[id]/page.tsx — added `generateMetadata` for dynamic page title ("{filename} — Attachment Intelligence"), matching status badge colors to document card (green/yellow/red)
+- Updated: src/components/ui/progress.tsx — added `indicatorClassName` prop to support colored progress bar indicators
+- Updated: src/features/documents/strategy-card.tsx — evaluation score progress bars now colored by score range (1-3=red, 4-6=yellow, 7-10=green); score text colors updated to match
+- Files: src/components/ui/sonner.tsx, src/components/ui/progress.tsx, src/app/layout.tsx, src/app/page.tsx, src/app/documents/[id]/page.tsx, src/features/upload/upload-zone.tsx, src/features/feedback/feedback-form.tsx, src/features/documents/document-detail-poller.tsx, src/features/documents/document-card.tsx, src/features/documents/strategy-card.tsx
+- Notes: TypeScript compiles clean. All four subtasks addressed: empty states, toast notifications, visual consistency (badge colors + progress bar colors), and dynamic page titles.

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -22,6 +23,37 @@ import type {
 } from "@/types/database";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const { data: doc } = await supabaseAdmin
+    .from("documents")
+    .select("filename")
+    .eq("id", id)
+    .single();
+
+  return {
+    title: doc
+      ? `${doc.filename} — Attachment Intelligence`
+      : "Document — Attachment Intelligence",
+  };
+}
+
+function getStatusColor(status: Document["status"]): string {
+  switch (status) {
+    case "completed":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "processing":
+    case "uploading":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "failed":
+      return "bg-red-100 text-red-800 border-red-200";
+  }
+}
 
 type SummaryWithEval = Summary & {
   evaluation: Evaluation | null;
@@ -140,15 +172,7 @@ export default async function DocumentDetailPage({
                 <span>{formatDate(doc.created_at)}</span>
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <Badge
-                  variant={
-                    doc.status === "completed"
-                      ? "default"
-                      : doc.status === "failed"
-                        ? "destructive"
-                        : "secondary"
-                  }
-                >
+                <Badge variant="outline" className={getStatusColor(doc.status)}>
                   {doc.status}
                 </Badge>
                 {doc.extraction_success ? (

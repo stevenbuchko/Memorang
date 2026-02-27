@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { ThumbsUp, ThumbsDown, Loader2, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { submitFeedback } from "@/features/feedback/actions";
@@ -42,13 +43,16 @@ export function FeedbackForm({ summaryId, existingFeedback }: FeedbackFormProps)
       } else {
         setSubmitted(true);
         setError(null);
+        toast.success("Feedback saved");
       }
     });
   }
 
   return (
     <div className="space-y-3">
-      <h4 className="text-sm font-medium">Feedback</h4>
+      <h4 className="text-sm font-medium">
+        {existingFeedback || submitted ? "Feedback" : "Rate this summary"}
+      </h4>
 
       <div className="flex flex-wrap items-center gap-2">
         <Button
