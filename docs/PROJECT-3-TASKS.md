@@ -102,7 +102,7 @@
 
 ## Phase B: UX Enhancements [AUTO]
 
-### Task B.1: Add Project Context Input [AUTO]
+### Task B.1: Add Project Context Input [AUTO] ✅
 
 **What:** Add an optional project context field so users can test relevance scoring.
 

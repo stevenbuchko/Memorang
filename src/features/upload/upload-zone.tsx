@@ -2,15 +2,35 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, FileWarning, Loader2 } from "lucide-react";
+import { Upload, FileWarning, Loader2, ChevronDown, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
 import { uploadDocument } from "./actions";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 type UploadState = "idle" | "uploading" | "error";
+
+const CONTEXT_PRESETS: { label: string; text: string }[] = [
+  {
+    label: "Medical Education",
+    text: "This document is part of a medical education curriculum. Evaluate its relevance to clinical training, patient care concepts, and medical terminology comprehension.",
+  },
+  {
+    label: "Legal Compliance",
+    text: "This document relates to legal compliance and regulatory requirements. Assess its coverage of compliance obligations, policy implications, and regulatory standards.",
+  },
+  {
+    label: "Software Engineering",
+    text: "This document is related to a software engineering project. Evaluate its relevance to technical architecture, development practices, and implementation guidance.",
+  },
+  {
+    label: "Financial Reporting",
+    text: "This document pertains to financial reporting and analysis. Assess its coverage of financial metrics, reporting standards, and fiscal data accuracy.",
+  },
+];
 
 export function UploadZone() {
   const router = useRouter();
@@ -18,6 +38,8 @@ export function UploadZone() {
   const [uploadState, setUploadState] = useState<UploadState>("idle");
   const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [showContext, setShowContext] = useState(false);
+  const [projectContext, setProjectContext] = useState("");
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -37,6 +59,9 @@ export function UploadZone() {
 
       const formData = new FormData();
       formData.append("file", file);
+      if (projectContext.trim()) {
+        formData.append("projectContext", projectContext.trim());
+      }
 
       const result = await uploadDocument(formData);
 
@@ -48,7 +73,7 @@ export function UploadZone() {
 
       router.push(`/documents/${result.id}`);
     },
-    [router]
+    [router, projectContext]
   );
 
   const handleDrop = useCallback(
@@ -133,6 +158,42 @@ export function UploadZone() {
         className="hidden"
         onChange={handleInputChange}
       />
+
+      <button
+        type="button"
+        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        onClick={() => setShowContext(!showContext)}
+      >
+        {showContext ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
+        Add project context (optional)
+      </button>
+
+      {showContext && (
+        <div className="space-y-3">
+          <Textarea
+            placeholder="Describe the project this document belongs to..."
+            value={projectContext}
+            onChange={(e) => setProjectContext(e.target.value)}
+            rows={3}
+          />
+          <div className="flex flex-wrap gap-2">
+            {CONTEXT_PRESETS.map((preset) => (
+              <Button
+                key={preset.label}
+                variant="outline"
+                size="sm"
+                onClick={() => setProjectContext(preset.text)}
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {error && (
         <Alert variant="destructive">

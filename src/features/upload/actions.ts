@@ -20,6 +20,7 @@ export async function uploadDocument(
   formData: FormData
 ): Promise<UploadResult | UploadError> {
   const file = formData.get("file") as File | null;
+  const projectContext = (formData.get("projectContext") as string | null) || null;
 
   if (!file) {
     return { error: "No file provided" };
@@ -61,6 +62,7 @@ export async function uploadDocument(
       mime_type: "application/pdf",
       status: "uploading",
       extraction_success: false,
+      project_context: projectContext,
     });
 
   if (insertError) {

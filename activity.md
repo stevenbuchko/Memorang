@@ -323,3 +323,10 @@
 - Updated: src/app/documents/[id]/page.tsx — replaced inline processing alert and static comparison rendering with `DocumentDetailPoller` client component for live updates; removed old comparison banner/strategy comparison rendering
 - Files: src/app/api/documents/[id]/route.ts, src/features/documents/processing-status.tsx, src/features/documents/document-detail-poller.tsx, src/features/documents/strategy-card.tsx, src/features/documents/strategy-comparison.tsx, src/app/documents/[id]/page.tsx
 - Notes: TypeScript compiles clean. Polling stops automatically when status changes to completed/failed. No infinite polling risk.
+
+## [2026-02-26 06:00] Task B.1: Add Project Context Input
+- Status: ✅ Complete
+- Updated: src/features/upload/upload-zone.tsx — added collapsible "Add project context (optional)" section below upload zone with Textarea and four preset buttons (Medical Education, Legal Compliance, Software Engineering, Financial Reporting). Collapsed by default. Clicking a preset fills the textarea. Context is passed to the upload server action via FormData.
+- Updated: src/features/upload/actions.ts — extracts `projectContext` from FormData and stores it in the `project_context` column on the document record during insert
+- Files: src/features/upload/upload-zone.tsx, src/features/upload/actions.ts
+- Notes: The orchestrator already passes `document.project_context` to both AI providers, so no pipeline changes were needed. TypeScript compiles clean.
