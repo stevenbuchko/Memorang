@@ -2,8 +2,8 @@
 
 ## Current Status
 **Last Updated:** 2026-02-26
-**Current Project:** 01-foundation-single-strategy
-**Tasks Completed:** 10
+**Current Project:** 02-multimodal-comparison
+**Tasks Completed:** 11
 
 ---
 
@@ -180,7 +180,31 @@
 - Files: src/features/feedback/actions.ts, src/features/feedback/feedback-form.tsx, src/features/documents/strategy-card.tsx
 - Notes: TypeScript compiles clean. All AUTO tasks in Phase E complete. Only Phase F (VERIFY) remains.
 
-## [2026-02-26 22:00] All AUTO Tasks Complete
+## [2026-02-26 22:00] All AUTO Tasks Complete (Project 1)
 - Status: PROJECT_COMPLETE
 - All [AUTO] tasks in docs/PROJECT-1-TASKS.md are complete (B.1–B.3, C.1–C.3, D.1–D.3, E.1–E.2)
 - Remaining: Task F.1 is [VERIFY] — requires Steven to manually test the end-to-end flow
+
+---
+
+## Project 2: Multimodal + Comparison
+
+## [2026-02-27 00:35] Task A.1: Build PDF-to-Image Conversion Utility
+- Status: ✅ Complete
+- Created: src/features/processing/pdf-to-images.ts — `convertPdfToImages(filePath, maxPages?)` function
+- Installed: `mupdf` (WASM-based PDF renderer, no native dependencies)
+- Approach: Used `mupdf` instead of `pdfjs-dist` + `canvas` because:
+  - `canvas` native module failed to compile (missing `pixman-1` system library)
+  - `pdfjs-dist` v5 requires Node >= 20.16.0 and browser APIs (`DOMMatrix`) not available in server context
+  - `mupdf` is WASM-based, zero native dependencies, works in any Node.js environment
+- Functionality:
+  - Downloads PDF from Supabase Storage via `supabaseAdmin`
+  - Opens PDF with `mupdf.Document.openDocument()`
+  - Renders each page to pixmap via `page.toPixmap()` with RGB colorspace
+  - Converts pixmap to PNG via `pixmap.asPNG()`, then to base64 string
+  - Caps at `maxPages` (default 5) to control costs
+  - Returns `{ images: string[], pageCount: number, success: boolean, error?: string }`
+  - Error handling: password-protected PDFs, corrupted PDFs, per-page render failures (skips bad pages, continues)
+  - Outer try-catch for unexpected errors (storage failures, etc.)
+- Files: src/features/processing/pdf-to-images.ts, package.json (added mupdf dependency)
+- Notes: TypeScript compiles clean. Removed failed `pdf-to-img` dependency (also needed canvas).
