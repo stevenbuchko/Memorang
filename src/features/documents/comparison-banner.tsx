@@ -50,7 +50,7 @@ function WinnerCell({
 }) {
   return (
     <td
-      className={`px-4 py-2.5 text-center text-sm ${
+      className={`px-2 sm:px-4 py-2 sm:py-2.5 text-center text-xs sm:text-sm ${
         isWinner ? "font-semibold text-green-600" : "text-muted-foreground"
       }`}
     >
@@ -122,15 +122,15 @@ export function ComparisonBanner({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                <th className="px-4 py-2 text-left font-medium text-muted-foreground" />
-                <th className="px-4 py-2 text-center font-medium">Text Extraction</th>
-                <th className="px-4 py-2 text-center font-medium">Multimodal</th>
+                <th className="px-2 sm:px-4 py-2 text-left font-medium text-muted-foreground" />
+                <th className="px-2 sm:px-4 py-2 text-center text-xs sm:text-sm font-medium">Text Extraction</th>
+                <th className="px-2 sm:px-4 py-2 text-center text-xs sm:text-sm font-medium">Multimodal</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
                 <tr key={row.label} className="border-b last:border-0">
-                  <td className="px-4 py-2.5 text-sm font-medium">{row.label}</td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium">{row.label}</td>
                   <WinnerCell
                     value={row.textVal}
                     isWinner={row.winner === "text"}

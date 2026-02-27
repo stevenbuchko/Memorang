@@ -127,7 +127,7 @@
 
 ---
 
-### Task B.2: Mobile Responsiveness Pass [AUTO]
+### Task B.2: Mobile Responsiveness Pass [AUTO] ✅
 
 **What:** Ensure the full app works well on mobile viewports.
 

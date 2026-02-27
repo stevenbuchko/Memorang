@@ -330,3 +330,16 @@
 - Updated: src/features/upload/actions.ts — extracts `projectContext` from FormData and stores it in the `project_context` column on the document record during insert
 - Files: src/features/upload/upload-zone.tsx, src/features/upload/actions.ts
 - Notes: The orchestrator already passes `document.project_context` to both AI providers, so no pipeline changes were needed. TypeScript compiles clean.
+
+## [2026-02-26 07:00] Task B.2: Mobile Responsiveness Pass
+- Status: ✅ Complete
+- Updated: src/app/page.tsx — reduced vertical padding and heading size on mobile (py-8/text-2xl → py-12/text-3xl on sm+)
+- Updated: src/app/documents/[id]/page.tsx — reduced vertical padding on mobile, smaller filename heading on mobile (text-xl → text-2xl at sm), smaller metadata text (text-xs → text-sm at sm), 44px min touch target on back button
+- Updated: src/features/documents/strategy-card.tsx — header badges stack vertically on mobile (flex-col → flex-row at sm), metrics grid uses tighter gaps on mobile with shrink-0 icons and truncated values to prevent overflow
+- Updated: src/features/documents/comparison-banner.tsx — reduced table cell padding on mobile (px-2 → px-4 at sm), reduced text size on mobile (text-xs → text-sm at sm) for headers, labels, and value cells
+- Updated: src/features/documents/document-card.tsx — smaller icon and tighter padding on mobile (h-6 → h-8 at sm, p-3 → p-4 at sm), flex-wrap on badge row
+- Updated: src/features/documents/aggregate-stats.tsx — tighter grid gap on mobile (gap-2 → gap-3 at sm), smaller card padding (p-3 → p-4 at sm), responsive text sizes for stat values and labels
+- Updated: src/features/upload/upload-zone.tsx — reduced upload zone padding on mobile (py-8 → py-12 at sm), 44px min touch target on context toggle button
+- Updated: src/features/feedback/feedback-form.tsx — flex-wrap on feedback buttons, 44px min-height touch targets on all interactive buttons
+- Files: src/app/page.tsx, src/app/documents/[id]/page.tsx, src/features/documents/strategy-card.tsx, src/features/documents/comparison-banner.tsx, src/features/documents/document-card.tsx, src/features/documents/aggregate-stats.tsx, src/features/upload/upload-zone.tsx, src/features/feedback/feedback-form.tsx
+- Notes: All interactive elements have ≥44px touch targets. No horizontal scroll at 375px. Content readable without zooming. Tabs already handle mobile strategy switching (from Project 2). TypeScript compiles clean.

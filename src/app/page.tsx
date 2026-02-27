@@ -61,8 +61,8 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="text-3xl font-bold tracking-tight mb-8">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6 sm:mb-8">
           Attachment Intelligence
         </h1>
 

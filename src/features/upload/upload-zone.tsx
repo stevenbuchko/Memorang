@@ -128,7 +128,7 @@ export function UploadZone() {
         onDragLeave={handleDragLeave}
         onClick={handleClick}
       >
-        <CardContent className="flex flex-col items-center justify-center py-12">
+        <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
           {uploadState === "uploading" ? (
             <>
               <Loader2 className="h-10 w-10 text-muted-foreground animate-spin mb-4" />
@@ -161,7 +161,7 @@ export function UploadZone() {
 
       <button
         type="button"
-        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px]"
         onClick={() => setShowContext(!showContext)}
       >
         {showContext ? (

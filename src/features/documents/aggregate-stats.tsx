@@ -126,19 +126,19 @@ export async function AggregateStats() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 lg:grid-cols-6">
       {stats.map((stat) => (
         <Card key={stat.label}>
-          <CardContent className="p-4">
-            <p className="text-2xl font-bold tracking-tight">
+          <CardContent className="p-3 sm:p-4">
+            <p className="text-xl sm:text-2xl font-bold tracking-tight truncate">
               {stat.value}
               {stat.sublabel && (
-                <span className="text-sm font-normal text-muted-foreground">
+                <span className="text-xs sm:text-sm font-normal text-muted-foreground">
                   {stat.sublabel}
                 </span>
               )}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 leading-tight">{stat.label}</p>
           </CardContent>
         </Card>
       ))}

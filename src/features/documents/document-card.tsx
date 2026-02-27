@@ -61,11 +61,11 @@ export function DocumentCard({ doc }: { doc: DocumentWithScores }) {
   return (
     <Link href={`/documents/${doc.id}`}>
       <Card className="transition-colors hover:bg-muted/50 cursor-pointer">
-        <CardContent className="flex items-center gap-4 p-4">
-          <FileText className="h-8 w-8 shrink-0 text-muted-foreground" />
+        <CardContent className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4">
+          <FileText className="h-6 w-6 sm:h-8 sm:w-8 shrink-0 text-muted-foreground" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{doc.filename}</p>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex flex-wrap items-center gap-2 mt-1">
               <Badge variant={getStatusVariant(doc.status)}>{doc.status}</Badge>
               {scores && (
                 <span className="text-xs text-muted-foreground">{scores}</span>

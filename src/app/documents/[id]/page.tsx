@@ -115,10 +115,10 @@ export default async function DocumentDetailPage({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className={`mx-auto px-4 py-12 ${hasMultipleStrategies || isProcessing ? "max-w-6xl" : "max-w-3xl"}`}>
+      <div className={`mx-auto px-4 py-8 sm:py-12 ${hasMultipleStrategies || isProcessing ? "max-w-6xl" : "max-w-3xl"}`}>
         {/* Back button */}
         <Link href="/">
-          <Button variant="ghost" size="sm" className="mb-6 -ml-2">
+          <Button variant="ghost" size="sm" className="mb-6 -ml-2 min-h-[44px]">
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back
           </Button>
@@ -129,10 +129,10 @@ export default async function DocumentDetailPage({
           <div className="flex items-start gap-3">
             <FileText className="h-8 w-8 shrink-0 text-muted-foreground mt-0.5" />
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-bold tracking-tight break-all">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight break-all">
                 {doc.filename}
               </h1>
-              <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-muted-foreground">
                 {doc.page_count != null && (
                   <span>{doc.page_count} page{doc.page_count !== 1 ? "s" : ""}</span>
                 )}

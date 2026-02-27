@@ -156,9 +156,9 @@ export function StrategyCard({ summary }: StrategyCardProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-lg">{strategyLabel}</CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary">{summary.model_name}</Badge>
             {summary.document_type && (
               <Badge variant="outline">{summary.document_type}</Badge>
@@ -269,30 +269,30 @@ export function StrategyCard({ summary }: StrategyCardProps) {
         {/* Metrics */}
         <div>
           <h4 className="text-sm font-medium mb-3">Metrics</h4>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <div>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Time</p>
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium truncate">
                   {formatProcessingTime(summary.processing_time_ms)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Hash className="h-4 w-4 text-muted-foreground" />
-              <div>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Hash className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Tokens</p>
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium truncate">
                   {formatTokens(summary.total_tokens)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Coins className="h-4 w-4 text-muted-foreground" />
-              <div>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Coins className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Cost</p>
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium truncate">
                   {formatCost(
                     (summary.estimated_cost_usd ?? 0) +
                       (summary.evaluation?.estimated_cost_usd ?? 0)

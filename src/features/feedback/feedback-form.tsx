@@ -50,10 +50,11 @@ export function FeedbackForm({ summaryId, existingFeedback }: FeedbackFormProps)
     <div className="space-y-3">
       <h4 className="text-sm font-medium">Feedback</h4>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           variant={rating === "thumbs_up" ? "default" : "outline"}
           size="sm"
+          className="min-h-[44px]"
           onClick={() => handleRating("thumbs_up")}
           disabled={isPending}
         >
@@ -63,6 +64,7 @@ export function FeedbackForm({ summaryId, existingFeedback }: FeedbackFormProps)
         <Button
           variant={rating === "thumbs_down" ? "default" : "outline"}
           size="sm"
+          className="min-h-[44px]"
           onClick={() => handleRating("thumbs_down")}
           disabled={isPending}
         >
@@ -90,7 +92,7 @@ export function FeedbackForm({ summaryId, existingFeedback }: FeedbackFormProps)
             <span className="text-xs text-muted-foreground">
               {comment.length}/500
             </span>
-            <Button size="sm" onClick={handleSubmit} disabled={isPending || !rating}>
+            <Button size="sm" className="min-h-[44px]" onClick={handleSubmit} disabled={isPending || !rating}>
               {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
               {existingFeedback && !submitted ? "Update" : "Submit"}
             </Button>
