@@ -1,3 +1,4 @@
+export type DocumentSource = "thread" | "knowledge_base";
 export type DocumentStatus = "uploading" | "processing" | "completed" | "failed";
 export type ProcessingStrategy = "text_extraction" | "multimodal";
 export type SummaryStatus = "processing" | "completed" | "failed";
@@ -22,6 +23,7 @@ export interface Document {
   error_message: string | null;
   error_type: ExtractionErrorType | null;
   project_context: string | null;
+  source: DocumentSource;
   created_at: string;
   updated_at: string;
 }

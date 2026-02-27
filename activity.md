@@ -373,3 +373,23 @@
 - Created: .env.example
 - Installed: geist (npm package for local Geist fonts)
 - Notes: TypeScript compiles clean. Build produces correct route structure (static: /_not-found, dynamic: /, /api/documents/[id], /documents/[id]).
+- ⚠️ Sandbox restriction: `.env.example` was created but git can't access files matching `.env.*`. Steven needs to run `git add .env.example && git commit --amend --no-edit` to include it in the commit.
+
+## [2026-02-26 10:00] Task C.2: Deploy to Vercel
+- Status: 🚫 BLOCKED — [MANUAL] step required
+- Steven needs to:
+  1. Push the repo to GitHub (if not already)
+  2. Go to https://vercel.com → Import the repository
+  3. Set environment variables in Vercel project settings: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY
+  4. Deploy
+  5. Note: if `mupdf` has issues in Vercel's serverless environment, may need to troubleshoot serverExternalPackages config
+
+## [2026-02-26 10:00] Task D.1: Production Smoke Test
+- Status: 🚫 BLOCKED — [VERIFY] step required
+- Steven needs to: Test the deployed app end-to-end on the production Vercel URL (upload PDFs, verify dual strategies, test project context, submit feedback, check aggregate stats, test on mobile)
+
+## [2026-02-26 10:00] All AUTO Tasks Complete (Project 3)
+- Status: PROJECT_COMPLETE
+- All [AUTO] tasks in docs/PROJECT-3-TASKS.md are complete (A.1, A.2, B.1, B.2, B.3, C.1)
+- Remaining: Task C.2 is [MANUAL] — Steven needs to deploy to Vercel
+- Remaining: Task D.1 is [VERIFY] — Steven needs to smoke test the production deployment

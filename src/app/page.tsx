@@ -1,15 +1,13 @@
-import { FileText, Upload } from "lucide-react";
+import Image from "next/image";
 import { supabaseAdmin } from "@/lib/supabase";
-import { UploadZone } from "@/features/upload/upload-zone";
-import { DocumentCard } from "@/features/documents/document-card";
-import { AggregateStats } from "@/features/documents/aggregate-stats";
-import type { Document, Summary, Evaluation } from "@/types/database";
+import { HomeTabs } from "@/features/home/home-tabs";
+import type { Document, Summary, Evaluation, Feedback } from "@/types/database";
 
-type DocumentWithScores = Document & {
-  summaries: (Summary & { evaluation: Evaluation | null })[];
+type DocumentWithSummaries = Document & {
+  summaries: (Summary & { evaluation: Evaluation | null; feedback: Feedback | null })[];
 };
 
-async function getDocuments(): Promise<DocumentWithScores[]> {
+async function getDocuments(): Promise<DocumentWithSummaries[]> {
   const { data: documents, error } = await supabaseAdmin
     .from("documents")
     .select("*")
@@ -28,12 +26,20 @@ async function getDocuments(): Promise<DocumentWithScores[]> {
   const summaryIds = (summaries ?? []).map((s: Summary) => s.id);
 
   let evaluations: Evaluation[] = [];
+  let feedbacks: Feedback[] = [];
   if (summaryIds.length > 0) {
-    const { data } = await supabaseAdmin
-      .from("evaluations")
-      .select("*")
-      .in("summary_id", summaryIds);
-    evaluations = data ?? [];
+    const [evalResult, feedbackResult] = await Promise.all([
+      supabaseAdmin
+        .from("evaluations")
+        .select("*")
+        .in("summary_id", summaryIds),
+      supabaseAdmin
+        .from("feedback")
+        .select("*")
+        .in("summary_id", summaryIds),
+    ]);
+    evaluations = evalResult.data ?? [];
+    feedbacks = feedbackResult.data ?? [];
   }
 
   const evalMap = new Map<string, Evaluation>();
@@ -41,10 +47,15 @@ async function getDocuments(): Promise<DocumentWithScores[]> {
     evalMap.set(e.summary_id, e);
   }
 
-  const summaryMap = new Map<string, (Summary & { evaluation: Evaluation | null })[]>();
+  const feedbackMap = new Map<string, Feedback>();
+  for (const f of feedbacks) {
+    feedbackMap.set(f.summary_id, f);
+  }
+
+  const summaryMap = new Map<string, (Summary & { evaluation: Evaluation | null; feedback: Feedback | null })[]>();
   for (const s of (summaries ?? []) as Summary[]) {
     const arr = summaryMap.get(s.document_id) ?? [];
-    arr.push({ ...s, evaluation: evalMap.get(s.id) ?? null });
+    arr.push({ ...s, evaluation: evalMap.get(s.id) ?? null, feedback: feedbackMap.get(s.id) ?? null });
     summaryMap.set(s.document_id, arr);
   }
 
@@ -62,36 +73,20 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6 sm:mb-8">
-          Attachment Intelligence
-        </h1>
-
-        <AggregateStats />
-
-        <div className="mt-6">
-          <UploadZone />
+        <div className="flex items-center gap-2.5 mb-6 sm:mb-8">
+          <Image
+            src="/memorang-logo.png"
+            alt="Memorang"
+            width={36}
+            height={36}
+            className="h-9 w-9"
+          />
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            memorang
+          </h1>
         </div>
 
-        <div className="mt-10">
-          {documents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-              <div className="rounded-full bg-muted p-4 mb-4">
-                <Upload className="h-10 w-10" />
-              </div>
-              <p className="text-base font-medium">Upload your first PDF to get started</p>
-              <p className="text-sm mt-1">
-                AI will generate summaries, tags, and quality scores using two strategies
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <h2 className="text-lg font-semibold">Documents</h2>
-              {documents.map((doc) => (
-                <DocumentCard key={doc.id} doc={doc} />
-              ))}
-            </div>
-          )}
-        </div>
+        <HomeTabs documents={documents} />
       </div>
     </div>
   );

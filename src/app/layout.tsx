@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Toaster } from "@/components/ui/sonner";
+import "@fontsource/open-sans/400.css";
+import "@fontsource/open-sans/500.css";
+import "@fontsource/open-sans/600.css";
+import "@fontsource/open-sans/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
+        className={`${GeistMono.variable} antialiased`}
+        style={{ fontFamily: "'Open Sans', sans-serif" }}
       >
         {children}
         <Toaster />

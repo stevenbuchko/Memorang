@@ -9,6 +9,9 @@ import {
   Hash,
   AlertTriangle,
   Loader2,
+  ThumbsUp,
+  ThumbsDown,
+  MessageSquare,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +24,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import { FeedbackForm } from "@/features/feedback/feedback-form";
 import type { Summary, Evaluation, Feedback, Tag } from "@/types/database";
 
 interface StrategyCardProps {
@@ -311,8 +313,36 @@ export function StrategyCard({ summary }: StrategyCardProps) {
 
         <Separator />
 
-        {/* Feedback */}
-        <FeedbackForm summaryId={summary.id} existingFeedback={summary.feedback} />
+        {/* Feedback (read-only) */}
+        {summary.feedback ? (
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">User Feedback</h4>
+            <div className="flex items-center gap-2">
+              {summary.feedback.rating === "thumbs_up" ? (
+                <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <ThumbsUp className="h-3 w-3 mr-1" />
+                  Helpful
+                </Badge>
+              ) : (
+                <Badge className="bg-red-100 text-red-800 border-red-200">
+                  <ThumbsDown className="h-3 w-3 mr-1" />
+                  Not helpful
+                </Badge>
+              )}
+            </div>
+            {summary.feedback.comment && (
+              <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
+                <MessageSquare className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                <p>{summary.feedback.comment}</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-1">
+            <h4 className="text-sm font-medium text-muted-foreground">User Feedback</h4>
+            <p className="text-xs text-muted-foreground">No feedback submitted yet</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

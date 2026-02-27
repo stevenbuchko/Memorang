@@ -1,0 +1,67 @@
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+function CardSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-5 w-24" />
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-4 w-48" />
+        <div className="flex gap-2">
+          <Skeleton className="h-6 w-16 rounded-md" />
+          <Skeleton className="h-6 w-20 rounded-md" />
+          <Skeleton className="h-6 w-14 rounded-md" />
+        </div>
+        <Skeleton className="h-px w-full" />
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="space-y-1.5">
+              <div className="flex justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-12" />
+              </div>
+              <Skeleton className="h-2 w-full rounded-full" />
+              <Skeleton className="h-3 w-3/4" />
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function AnalysisLoading() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
+        <Skeleton className="h-8 w-36 mb-6" />
+
+        <div className="mb-8 space-y-2">
+          <Skeleton className="h-5 w-24" />
+          <div className="flex items-start gap-3">
+            <Skeleton className="h-8 w-8 shrink-0 rounded" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-7 w-2/3" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        </div>
+
+        {/* Comparison banner skeleton */}
+        <Skeleton className="h-32 w-full mb-6 rounded-lg" />
+
+        {/* Two strategy card skeletons side by side */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      </div>
+    </div>
+  );
+}

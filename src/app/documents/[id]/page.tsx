@@ -142,12 +142,11 @@ export default async function DocumentDetailPage({
   }
 
   const isFailed = doc.status === "failed";
-  const hasMultipleStrategies = doc.summaries.length > 1;
   const isProcessing = doc.status === "processing" || doc.status === "uploading";
 
   return (
     <div className="min-h-screen bg-background">
-      <div className={`mx-auto px-4 py-8 sm:py-12 ${hasMultipleStrategies || isProcessing ? "max-w-6xl" : "max-w-3xl"}`}>
+      <div className="mx-auto px-4 py-8 sm:py-12 max-w-3xl">
         {/* Back button */}
         <Link href="/">
           <Button variant="ghost" size="sm" className="mb-6 -ml-2 min-h-[44px]">
