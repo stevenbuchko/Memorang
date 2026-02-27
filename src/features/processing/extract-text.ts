@@ -2,12 +2,14 @@
 // @ts-expect-error - import from lib directly to avoid pdf-parse's test file auto-loading
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import { supabaseAdmin } from "@/lib/supabase";
+import type { ExtractionErrorType } from "@/types/database";
 
 export interface TextExtractionResult {
   text: string;
   pageCount: number;
   success: boolean;
   error?: string;
+  errorType?: ExtractionErrorType;
 }
 
 const MIN_TEXT_LENGTH = 50;
@@ -26,6 +28,7 @@ export async function extractTextFromPdf(
         pageCount: 0,
         success: false,
         error: `Failed to download file from storage: ${error?.message ?? "No data returned"}`,
+        errorType: "storage_error",
       };
     }
 
@@ -45,6 +48,7 @@ export async function extractTextFromPdf(
           pageCount: 0,
           success: false,
           error: "PDF is password-protected and cannot be parsed",
+          errorType: "password_protected",
         };
       }
 
@@ -53,6 +57,7 @@ export async function extractTextFromPdf(
         pageCount: 0,
         success: false,
         error: `Failed to parse PDF: ${message}`,
+        errorType: "corrupted",
       };
     }
 
@@ -68,6 +73,7 @@ export async function extractTextFromPdf(
           text.length === 0
             ? "No text could be extracted (likely a scanned PDF)"
             : `Only ${text.length} characters extracted (likely a scanned PDF)`,
+        errorType: "no_text",
       };
     }
 
@@ -79,6 +85,7 @@ export async function extractTextFromPdf(
       pageCount: 0,
       success: false,
       error: `Unexpected error during text extraction: ${message}`,
+      errorType: "unknown",
     };
   }
 }

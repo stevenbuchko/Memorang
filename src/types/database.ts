@@ -2,6 +2,12 @@ export type DocumentStatus = "uploading" | "processing" | "completed" | "failed"
 export type ProcessingStrategy = "text_extraction" | "multimodal";
 export type SummaryStatus = "processing" | "completed" | "failed";
 export type FeedbackRating = "thumbs_up" | "thumbs_down";
+export type ExtractionErrorType =
+  | "password_protected"
+  | "corrupted"
+  | "no_text"
+  | "storage_error"
+  | "unknown";
 
 export interface Document {
   id: string;
@@ -14,6 +20,7 @@ export interface Document {
   extraction_success: boolean;
   status: DocumentStatus;
   error_message: string | null;
+  error_type: ExtractionErrorType | null;
   project_context: string | null;
   created_at: string;
   updated_at: string;

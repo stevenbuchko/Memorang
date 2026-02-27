@@ -2,8 +2,8 @@
 
 ## Current Status
 **Last Updated:** 2026-02-26
-**Current Project:** 02-multimodal-comparison
-**Tasks Completed:** 12
+**Current Project:** 03-polish-deploy
+**Tasks Completed:** 13
 
 ---
 
@@ -298,3 +298,17 @@
 - Status: PROJECT_COMPLETE
 - All [AUTO] tasks in docs/PROJECT-2-TASKS.md are complete (A.1–A.3, B.1–B.3)
 - Remaining: Task C.1 is [VERIFY] — requires Steven to manually test the dual strategy comparison flow
+
+---
+
+## Project 3: Polish + Deploy
+
+## [2026-02-26 04:00] Task A.1: Robust PDF Error Handling
+- Status: ✅ Complete
+- Updated: src/features/processing/extract-text.ts — added typed `ExtractionErrorType` classification to all error returns (password_protected, corrupted, no_text, storage_error, unknown)
+- Updated: src/types/database.ts — added `ExtractionErrorType` union type and `error_type` field to `Document` interface
+- Updated: src/features/processing/orchestrator.ts — stores `error_type` in document record, handles `corrupted` PDFs by failing early (no strategy runs), handles `password_protected` by skipping text strategy but still running multimodal
+- Created: src/features/documents/extraction-alert.tsx — `ExtractionAlert` component with contextual alerts per error type (warning for password-protected, error for corrupted, info for scanned/no-text, error for storage)
+- Updated: src/app/documents/[id]/page.tsx — renders `ExtractionAlert` in document header when `error_type` is present
+- Files: src/features/processing/extract-text.ts, src/types/database.ts, src/features/processing/orchestrator.ts, src/features/documents/extraction-alert.tsx, src/app/documents/[id]/page.tsx
+- Notes: TypeScript compiles clean.

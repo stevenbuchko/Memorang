@@ -148,15 +148,32 @@ export async function processDocument(documentId: string): Promise<void> {
       page_count: extraction.pageCount || null,
       extraction_success: extraction.success,
       error_message: extraction.error || null,
+      error_type: extraction.errorType || null,
     })
     .eq("id", documentId);
+
+  // --- Handle corrupted PDFs early ---
+  // Corrupted files can't be processed by either strategy
+  if (extraction.errorType === "corrupted") {
+    await supabaseAdmin
+      .from("documents")
+      .update({
+        status: "failed",
+        error_message: extraction.error || "This file is corrupted and cannot be read",
+      })
+      .eq("id", documentId);
+    return;
+  }
 
   // --- PDF-to-Image Conversion ---
   const imageConversion = await convertPdfToImages(document.file_path);
 
-  // --- Run Both Strategies ---
+  // --- Determine which strategies to run ---
   const hasText = extraction.text && extraction.text.trim().length > 0;
   const hasImages = imageConversion.success && imageConversion.images.length > 0;
+
+  // Password-protected: skip text extraction strategy, still attempt multimodal
+  const skipTextStrategy = extraction.errorType === "password_protected";
 
   // If neither extraction method produced usable content, mark failed
   if (!hasText && !hasImages) {
@@ -181,7 +198,7 @@ export async function processDocument(documentId: string): Promise<void> {
   // Build strategy promises
   const strategyPromises: Promise<boolean>[] = [];
 
-  if (hasText) {
+  if (hasText && !skipTextStrategy) {
     strategyPromises.push(
       runStrategy({
         documentId,

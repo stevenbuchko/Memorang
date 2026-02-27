@@ -13,11 +13,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { StrategyComparison } from "@/features/documents/strategy-comparison";
 import { ComparisonBanner } from "@/features/documents/comparison-banner";
+import { ExtractionAlert } from "@/features/documents/extraction-alert";
 import type {
   Document,
   Summary,
   Evaluation,
   Feedback,
+  ExtractionErrorType,
 } from "@/types/database";
 
 export const dynamic = "force-dynamic";
@@ -165,6 +167,16 @@ export default async function DocumentDetailPage({
             </div>
           </div>
         </div>
+
+        {/* Extraction error alert */}
+        {doc.error_type && doc.error_type !== "unknown" && (
+          <div className="mb-4">
+            <ExtractionAlert
+              errorType={doc.error_type as ExtractionErrorType}
+              errorMessage={doc.error_message}
+            />
+          </div>
+        )}
 
         {/* Processing state */}
         {isProcessing && (
